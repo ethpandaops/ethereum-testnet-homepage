@@ -1,0 +1,28 @@
+<script>
+  function addNetwork() {
+    window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [{
+      chainId: "{{ printf "0x%x" (int $.Page.Site.Params.ethereum.chainId) }}",
+      chainName: "{{ $.Page.Site.Params.ethereum.chainName }}",
+      nativeCurrency: {
+          name: 'Testnet ETH',
+          symbol: 'ETH',
+          decimals: 18
+      },
+      rpcUrls: ["{{ $.Page.Site.Params.ethereum.rpcUrl }}"],
+      blockExplorerUrls: ["{{ $.Page.Site.Params.ethereum.explorerUrl }}"]
+      }]
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+</script>
+
+<div style="display: block; margin: 0 auto; text-align: center;">
+  <button onclick="addNetwork()">
+    <img style="margin: 10px auto;" src="https://docs.metamask.io/metamask-fox.svg"/>
+    Add network to metamask
+  </button>
+</div>
