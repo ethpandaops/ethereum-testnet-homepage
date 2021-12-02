@@ -10,4 +10,4 @@ RUN wget -O - https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION
 WORKDIR /app
 COPY . /app
 EXPOSE 1313
-CMD ["hugo","server", "--bind","0.0.0.0"]
+CMD ["hugo","server", "--bind","0.0.0.0", "--disableLiveReload", "--disableBrowserError"]
