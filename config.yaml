@@ -21,6 +21,7 @@ params:
     rpcUrl: https://rpc.testnet0.themerge.dev
     explorerUrl: https://explorer.testnet0.themerge.dev
     beaconexplorerUrl: https://beaconchain.testnet0.themerge.dev
+    consensusmonitorUrl: https://consensusmonitor.testnet0.themerge.dev
     chainName: "Testnet0"
     chainId: "1337332"
 
