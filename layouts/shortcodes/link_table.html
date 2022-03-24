@@ -1,0 +1,28 @@
+<table>
+  <thead>
+    <tr>
+      <th>
+        Name
+      </th>
+      <th>
+        Link
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+  {{ range $.Page.Site.Params.links }}
+    <tr>
+      <td>
+        {{ .name }}
+      </td>
+      <td>
+        {{ if .url }}
+          <a href="{{ .url }}">{{ .url }}</a>
+        {{ else }}
+          <a href="{{ index $.Page.Site.Params.ethereum .dataLookup }}">{{ index $.Page.Site.Params.ethereum .dataLookup }}</a>
+        {{ end }}
+      </td>
+    </tr>
+  {{ end }}
+  </tbody>
+</table>

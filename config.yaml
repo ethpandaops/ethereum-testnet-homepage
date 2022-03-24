@@ -25,6 +25,20 @@ params:
     chainName: "Testnet0"
     chainId: "1337332"
 
+  links:
+  - name: "Beaconchain explorer"
+    dataLookup: beaconexplorerUrl
+  - name: "Transaction explorer"
+    dataLookup: explorerUrl
+  - name: "Ethstats"
+    dataLookup: ethstatsUrl
+  - name: "Consensus monitor"
+    dataLookup: consensusmonitorUrl
+  - name: "Faucet"
+    dataLookup: faucetUrl
+  - name: "JSON RPC"
+    dataLookup: rpcUrl
+
 menu:
   main:
     - identifier: ethereum-website
