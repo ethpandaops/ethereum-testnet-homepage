@@ -24,6 +24,11 @@ params:
     consensusmonitorUrl: https://consensusmonitor.testnet0.themerge.dev
     chainName: "Testnet0"
     chainId: "1337332"
+  metamask:
+    enabled: true
+  logo:
+    enabled: false
+    url: ''
 
   links:
   - name: "Beaconchain explorer"

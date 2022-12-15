@@ -1,3 +1,4 @@
+{{ if $.Page.Site.Params.metamask.enabled }}
 <script>
   function addNetwork() {
     window.ethereum.request({
@@ -2432,3 +2433,4 @@ module.exports = MersenneTwister;
     Add network to Metamask
   </button>
 </div>
+{{ end }}
