@@ -1,0 +1,5 @@
+{{ if $.Page.Site.Params.logo.enabled }}
+  <div style="display: flex; justify-content: center">
+    <img class="logo" src="{{ $.Page.Site.Params.logo.url }}" style="max-height: 150px" />
+  </div>
+{{ end }}
