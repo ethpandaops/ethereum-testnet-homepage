@@ -1,8 +1,9 @@
 &nbsp;
 {{< testnet_header >}}
 
-{{< metamask >}}
+{{< logo >}}
 
+{{< metamask >}}
 ---
 
 {{< link_table >}}
