@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG HUGO_VERSION=0.89.4
+ARG HUGO_VERSION=0.110.0
 
 RUN wget -O - https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-32bit.tar.gz | tar -xz -C /tmp \
     && mkdir -p /usr/local/sbin \
