@@ -29,6 +29,9 @@ params:
   logo:
     enabled: false
     url: ''
+  inventory:
+    enabled: true
+    url: https://bootnode-1.server.4844-devnet-4.ethpandaops.io/meta/api/v1/inventory.json
 
   links:
   - name: "Beaconchain explorer"
