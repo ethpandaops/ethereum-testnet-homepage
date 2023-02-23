@@ -1,0 +1,29 @@
+global:
+  listenAddr: ":5555"
+  logging: "debug" # panic,fatal,warm,info,debug,trace
+  metricsAddr: ":9090"
+
+ethereum-testnet-homepage:
+  caches:
+    blocks:
+      max_items: 200
+    states:
+      max_items: 5
+  historical_epoch_count: 20
+  frontend:
+    # if the frontend should served
+    enabled: false
+    # brand logo to display on the frontend (optional)
+    brand_image_url: https://www.cdn.com/logo.png
+    # brand to display on the frontend (optional)
+    brand_name: Brandname
+    # public url where frontend will be served from (optional)
+    public_url: https://www.domain.com
+
+
+beacon:
+  upstreams:
+  - name: remote
+    address: http://localhost:5052
+    timeoutSeconds: 30
+    dataProvider: true

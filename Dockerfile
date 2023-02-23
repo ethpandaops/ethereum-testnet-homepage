@@ -1,13 +1,16 @@
-FROM alpine:latest
+FROM golang:1.19 AS builder
+WORKDIR /src
+COPY go.sum go.mod ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o /bin/app .
 
-ARG HUGO_VERSION=0.110.0
-
-RUN wget -O - https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz | tar -xz -C /tmp \
-    && mkdir -p /usr/local/sbin \
-    && mv /tmp/hugo /usr/local/sbin/hugo \
-    && rm -rf /tmp/*
-
-WORKDIR /app
-COPY . /app
-EXPOSE 1313
-ENTRYPOINT ["hugo","server", "--bind","0.0.0.0", "--disableLiveReload", "--disableBrowserError", "-b" ,"" ,"--appendPort=false"]
+FROM ubuntu:latest
+RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
+  libssl-dev \
+  ca-certificates \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /bin/app /ethereum-testnet-homepage
+EXPOSE 5555
+ENTRYPOINT ["/ethereum-testnet-homepage"]
