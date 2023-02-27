@@ -66,7 +66,7 @@ func (n *Node) Start(ctx context.Context) error {
 	n.beacon.StartAsync(ctx)
 
 	n.beacon.OnHead(ctx, func(ctx context.Context, head *v1.HeadEvent) error {
-ye		n.ConsensusHead = head
+		n.ConsensusHead = head
 
 		return nil
 	})
