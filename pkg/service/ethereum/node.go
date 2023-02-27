@@ -7,17 +7,20 @@ import (
 
 	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/ethpandaops/beacon/pkg/beacon"
+	"github.com/ethpandaops/beacon/pkg/beacon/api/types"
 	"github.com/go-co-op/gocron"
 	"github.com/sirupsen/logrus"
 )
 
 type Node struct {
+	log       logrus.FieldLogger
 	infoMutex sync.RWMutex
 	info      NodeInfo
 	beacon    beacon.Node
 
 	ConsensusHead                *v1.HeadEvent
 	ConsensusFinalizedCheckpoint *v1.Finality
+	ConsensusPeers               *types.Peers
 
 	scheduler *gocron.Scheduler
 }
@@ -25,14 +28,19 @@ type Node struct {
 //nolint:gocritic // Not concerned about this amount of data
 func NewNode(ctx context.Context, log logrus.FieldLogger, name, beaconURL, rpcURL string, info NodeInfo) *Node {
 	opts := *beacon.DefaultOptions()
-	opts.BeaconSubscription.Topics = []string{"block", "head"}
+	opts.BeaconSubscription.
+		Enable().
+		Topics = []string{"block", "head"}
+
+	log = log.WithField("node", name)
 
 	return &Node{
+		log:       log.WithField("module", "service/ethereum/node"),
 		infoMutex: sync.RWMutex{},
 		info:      info,
 		scheduler: gocron.NewScheduler(time.Local),
 
-		beacon: beacon.NewNode(log.WithField("node", name), &beacon.Config{
+		beacon: beacon.NewNode(log, &beacon.Config{
 			Addr: beaconURL,
 			Name: name,
 		}, "ethereum_testnet_homepage", opts),
@@ -58,7 +66,7 @@ func (n *Node) Start(ctx context.Context) error {
 	n.beacon.StartAsync(ctx)
 
 	n.beacon.OnHead(ctx, func(ctx context.Context, head *v1.HeadEvent) error {
-		n.ConsensusHead = head
+ye		n.ConsensusHead = head
 
 		return nil
 	})
@@ -68,6 +76,25 @@ func (n *Node) Start(ctx context.Context) error {
 
 		return nil
 	})
+
+	n.beacon.OnPeersUpdated(ctx, func(ctx context.Context, event *beacon.PeersUpdatedEvent) error {
+		n.ConsensusPeers = &event.Peers
+
+		return nil
+	})
+
+	if _, err := n.scheduler.Every("60s").Do(func() {
+		peers, err := n.beacon.FetchPeers(ctx)
+		if err != nil {
+			n.log.WithError(err).Error("Failed to get peer count")
+
+			return
+		}
+
+		n.ConsensusPeers = peers
+	}); err != nil {
+		return err
+	}
 
 	return nil
 }

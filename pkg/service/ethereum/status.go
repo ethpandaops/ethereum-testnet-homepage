@@ -1,6 +1,8 @@
 package ethereum
 
-import v1 "github.com/attestantio/go-eth2-client/api/v1"
+import (
+	v1 "github.com/attestantio/go-eth2-client/api/v1"
+)
 
 type NodeSummary struct {
 	// The name of the node.
@@ -17,13 +19,19 @@ type SummaryStatus struct {
 }
 
 type ConsensusSummaryStatus struct {
-	Healthy        bool          `json:"healthy"`
-	Version        string        `json:"version"`
-	ConfigName     string        `json:"config_name"`
-	DepositChainID uint64        `json:"deposit_chain_id"`
-	Genesis        *v1.Genesis   `json:"genesis"`
-	Finality       *v1.Finality  `json:"finality"`
-	Head           *v1.HeadEvent `json:"head"`
+	Healthy        bool           `json:"healthy"`
+	Version        string         `json:"version"`
+	ConfigName     string         `json:"config_name"`
+	DepositChainID uint64         `json:"deposit_chain_id"`
+	Genesis        *v1.Genesis    `json:"genesis"`
+	Finality       *v1.Finality   `json:"finality"`
+	Head           *v1.HeadEvent  `json:"head"`
+	PeerCount      ConnectedPeers `json:"peer_count"`
+}
+
+type ConnectedPeers struct {
+	Inbound  int `json:"inbound"`
+	Outbound int `json:"outbound"`
 }
 
 type ExecutionSummaryStatus struct {

@@ -77,6 +77,13 @@ func (s *Service) Nodes(ctx context.Context, req *NodesRequest) (*NodesResponse,
 			summary.Status.Consensus.Head = node.ConsensusHead
 		}
 
+		if node.ConsensusPeers != nil {
+			summary.Status.Consensus.PeerCount = ConnectedPeers{
+				Inbound:  len(node.ConsensusPeers.ByStateAndDirection("connected", "inbound")),
+				Outbound: len(node.ConsensusPeers.ByStateAndDirection("connected", "outbound")),
+			}
+		}
+
 		genesis, err := node.beacon.Genesis()
 		if err == nil {
 			summary.Status.Consensus.Genesis = genesis
