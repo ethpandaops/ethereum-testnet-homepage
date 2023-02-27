@@ -17,11 +17,13 @@ type SummaryStatus struct {
 }
 
 type ConsensusSummaryStatus struct {
-	Healthy        bool        `json:"healthy"`
-	Version        string      `json:"version"`
-	ConfigName     string      `json:"config_name"`
-	DepositChainID uint64      `json:"deposit_chain_id"`
-	Genesis        *v1.Genesis `json:"genesis"`
+	Healthy        bool          `json:"healthy"`
+	Version        string        `json:"version"`
+	ConfigName     string        `json:"config_name"`
+	DepositChainID uint64        `json:"deposit_chain_id"`
+	Genesis        *v1.Genesis   `json:"genesis"`
+	Finality       *v1.Finality  `json:"finality"`
+	Head           *v1.HeadEvent `json:"head"`
 }
 
 type ExecutionSummaryStatus struct {

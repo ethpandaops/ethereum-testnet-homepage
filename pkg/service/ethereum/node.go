@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	v1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/ethpandaops/beacon/pkg/beacon"
 	"github.com/go-co-op/gocron"
 	"github.com/sirupsen/logrus"
@@ -15,13 +16,16 @@ type Node struct {
 	info      NodeInfo
 	beacon    beacon.Node
 
+	ConsensusHead                *v1.HeadEvent
+	ConsensusFinalizedCheckpoint *v1.Finality
+
 	scheduler *gocron.Scheduler
 }
 
 //nolint:gocritic // Not concerned about this amount of data
 func NewNode(ctx context.Context, log logrus.FieldLogger, name, beaconURL, rpcURL string, info NodeInfo) *Node {
 	opts := *beacon.DefaultOptions()
-	opts.BeaconSubscription.Topics = []string{"block"}
+	opts.BeaconSubscription.Topics = []string{"block", "head"}
 
 	return &Node{
 		infoMutex: sync.RWMutex{},
@@ -52,6 +56,18 @@ func (n *Node) UpdateInfo(info NodeInfo) {
 
 func (n *Node) Start(ctx context.Context) error {
 	n.beacon.StartAsync(ctx)
+
+	n.beacon.OnHead(ctx, func(ctx context.Context, head *v1.HeadEvent) error {
+		n.ConsensusHead = head
+
+		return nil
+	})
+
+	n.beacon.OnFinalityCheckpointUpdated(ctx, func(ctx context.Context, event *beacon.FinalityCheckpointUpdated) error {
+		n.ConsensusFinalizedCheckpoint = event.Finality
+
+		return nil
+	})
 
 	return nil
 }

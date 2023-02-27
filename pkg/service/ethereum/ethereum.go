@@ -53,6 +53,10 @@ func (s *Service) Nodes(ctx context.Context, req *NodesRequest) (*NodesResponse,
 
 	rsp := &NodesResponse{}
 
+	s.inventory.nodesMutex.RLock()
+
+	defer s.inventory.nodesMutex.RUnlock()
+
 	for name, node := range s.inventory.Nodes() {
 		summary := NodeSummary{
 			Name: name,
@@ -63,6 +67,14 @@ func (s *Service) Nodes(ctx context.Context, req *NodesRequest) (*NodesResponse,
 				},
 				Execution: ExecutionSummaryStatus{},
 			},
+		}
+
+		if node.ConsensusFinalizedCheckpoint != nil {
+			summary.Status.Consensus.Finality = node.ConsensusFinalizedCheckpoint
+		}
+
+		if node.ConsensusHead != nil {
+			summary.Status.Consensus.Head = node.ConsensusHead
 		}
 
 		genesis, err := node.beacon.Genesis()
