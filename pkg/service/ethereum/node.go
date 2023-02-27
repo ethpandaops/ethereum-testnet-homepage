@@ -83,19 +83,6 @@ func (n *Node) Start(ctx context.Context) error {
 		return nil
 	})
 
-	if _, err := n.scheduler.Every("60s").Do(func() {
-		peers, err := n.beacon.FetchPeers(ctx)
-		if err != nil {
-			n.log.WithError(err).Error("Failed to get peer count")
-
-			return
-		}
-
-		n.ConsensusPeers = peers
-	}); err != nil {
-		return err
-	}
-
 	return nil
 }
 
