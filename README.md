@@ -2,12 +2,21 @@
 
 A homepage that can be used to show important links and documentation for a given testnet.
 
+## Getting started
+
+```bash
+git submodule update --init --recursive
+
+hugo server -D
+```
 
 ## Running with docker
 
 (Optional) Building with docker:
 
 ```sh
+git submodule update --init --recursive
+
 docker build -t skylenet/ethereum-testnet-homepage .
 ```
 
