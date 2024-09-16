@@ -9,3 +9,5 @@
 {{< link_table >}}
 
 {{< custom_md >}}
+
+{{< inventory >}}

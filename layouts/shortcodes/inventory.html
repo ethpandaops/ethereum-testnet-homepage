@@ -1,0 +1,91 @@
+{{ if $.Page.Site.Params.inventory.enabled }}
+{{ $inventory := getJSON "https://bootnode-1.server.4844-devnet-4.ethpandaops.io/meta/api/v1/inventory.json" }}
+
+<script>
+  function copyToClipboard(text) {
+    if (window.clipboardData && window.clipboardData.setData) {
+        // Internet Explorer-specific code path to prevent textarea being shown while dialog is visible.
+        return window.clipboardData.setData("Text", text);
+
+    }
+    else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+          var textarea = document.createElement("textarea");
+          textarea.textContent = text;
+          textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in Microsoft Edge.
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+              return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+          }
+          catch (ex) {
+              console.warn("Copy to clipboard failed.", ex);
+              return prompt("Copy to clipboard: Ctrl+C, Enter", text);
+          }
+          finally {
+              document.body.removeChild(textarea);
+          }
+      }
+  }
+</script>
+
+<style>
+  .clickable {
+    cursor: pointer;
+  }
+  #inventory td {
+    word-wrap: break-word;
+    max-width: 150px;
+  }
+</style>
+<h3>
+  Instances
+</h3>
+
+<h4> Links </h4>
+<table id="inventory">
+  <thead>
+    <tr>
+      <th>
+        Name
+      </th>
+      <th>
+        Images
+      </th>
+      <th>
+        SSH
+      </th>
+      <th>
+        URLs
+      </th>
+      <th>
+        Peering
+      </th>
+    </tr>
+  </thead>
+  <tbody style="font-size: 13px">
+  {{ range $name, $pair := $inventory.ethereum_pairs }}
+    <tr>
+      <td>
+        {{ $name }}
+      </td>
+      <td>
+        <b>{{ $pair.consensus.client }}:</b> {{ $pair.consensus.image }} <br />
+        <b>{{ $pair.execution.client }}:</b> {{ $pair.execution.image }}
+      </td>
+      <td >
+        ssh devops@{{ $name }}.server.{{ $.Page.Site.Params.ethereum.chainName }}.ethpandaops.io
+      </td>
+      <td>
+        <a href="{{ $pair.consensus.beacon_uri }}" target="_blank">Beacon</a> <br />
+        <a href="{{ $pair.execution.rpc_uri }}" target="_blank">RPC</a>
+      </td>
+      <td>
+        <a class="clickable" onclick="copyToClipboard('{{ $pair.consensus.enr }}')">CL ENR</a> <br />
+        <a class="clickable" onclick="copyToClipboard('{{ $pair.consensus.peer_id }}')">CL Peer ID</a> <br />
+        <a class="clickable" onclick="copyToClipboard('{{ $pair.execution.enode }}')">EL Enode</a>
+      </td>
+    </tr>
+  {{ end }}
+  </tbody>
+</table>
+{{ end }}
