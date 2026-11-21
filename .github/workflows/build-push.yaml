@@ -7,6 +7,11 @@ jobs:
   build-push:
     name: build-push
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout this repo
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
@@ -16,18 +21,25 @@ jobs:
         uses: docker/setup-qemu-action@27d0a4f181a40b142cce983c5393082c365d1480 # v1.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f211e3e9ded2d9377c8cadc4489a4e38014bc4c9 # v1.7.0
-      - name: Login to Docker Hub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # v1.14.1
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
       - name: docker-build-push
         id: docker_build
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # v2.10.0
         with:
           context: .
           file: Dockerfile
-          tags: ethpandaops/ethereum-testnet-homepage:latest
+          tags: ghcr.io/ethpandaops/ethereum-testnet-homepage:latest
           push: true
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Attest and mirror to Docker Hub
+        uses: ethpandaops/actions/mirror-image@dab9cb304b6a1dd648e2f1acef6169f7095f515e
+        with:
+          tags: latest
+          digest: ${{ steps.docker_build.outputs.digest }}
+          mirror-url: ${{ secrets.IMAGE_MIRROR_URL }}
